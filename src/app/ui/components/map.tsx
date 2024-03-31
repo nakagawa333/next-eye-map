@@ -11,6 +11,7 @@ import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import axios from "axios";
 import { Loading } from "./loading";
 import { Header } from "./Header/Header";
+import { Footer } from "./Footer/footer";
 
 L.Icon.Default.mergeOptions({
   iconUrl: markerIcon.src,
@@ -45,7 +46,7 @@ const Map = () => {
                         center={defaultPosition}
                         zoom={13}
                         scrollWheelZoom={true}
-                        style={{ height: "100vh", width: "100%" }}
+                        style={{ height: "calc(100vh - 70px)", width: "100%" }}
                     >
                         <TileLayer
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -76,7 +77,7 @@ const Map = () => {
                             })
                         }
                     </MapContainer>
-
+            <Footer />
             <Loading 
               isOpen={isLoadingOpen}
             />  
