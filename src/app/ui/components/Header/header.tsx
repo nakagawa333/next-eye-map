@@ -58,6 +58,9 @@ export const Header = (props:Props) => {
                     <div className="flex">
                         <Link href="/about" className="text-black ml-3">このサイトについて</Link>
                     </div>
+                    <div className="flex">
+                        <Link href="/contact" className="text-black ml-3">連絡先</Link>
+                    </div>
                     <div className="flex ml-auto">
                         <div>
                             <a href={twitterHref}
