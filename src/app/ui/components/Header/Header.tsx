@@ -1,3 +1,4 @@
+import Link from "next/link";
 
 type Props = {
 
@@ -6,13 +7,12 @@ type Props = {
 //Headerコンポーネントクラス
 export const Header = (props:Props) => {
     const text:string = `目元専門サロン Mapを共有`;
-    const url:string = location.href;
+    const url:string = "test";
     const params = new URLSearchParams();
     params.set("ref_src","twsrc%5Etf");
     params.set("data-text",text);
     params.set("data-url",url);
 
-    const href = location.href;
     const twitterHref:string = `https://twitter.com/share?${params}`;
 
     /**
@@ -53,7 +53,10 @@ export const Header = (props:Props) => {
             <nav className="bg-white border-gray-100 px-4 lg:px-6 py-2.5 dark:bg-gray-100">
                 <div className="flex flex-wrap">
                     <div className="flex">
-                        <p className="text-black">目元専門サロン Map</p>
+                        <Link href="/" className="text-black">目元専門サロン Map</Link>
+                    </div>
+                    <div className="flex">
+                        <Link href="/about" className="text-black ml-3">このサイトについて</Link>
                     </div>
                     <div className="flex ml-auto">
                         <div>

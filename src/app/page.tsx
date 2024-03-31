@@ -3,6 +3,8 @@ import MapPage from "./ui/pages/map-page";
 import Map from "./ui/components/map";
 import Head from "next/head";
 import Script from "next/script";
+import { Header } from "./ui/components/Header/header";
+import { Footer } from "./ui/components/Footer/footer";
 
 export default function Home() {
   return (
