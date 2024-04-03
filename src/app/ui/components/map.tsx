@@ -11,6 +11,7 @@ import { Loading } from "./loading";
 import { Footer } from "./Footer/footer";
 import { Header } from "./Header/header";
 import { PrefectureCoordinates } from "@/constants/prefectureCoordinates";
+import MarkerClusterGroup from 'react-leaflet-cluster'
 
 L.Icon.Default.mergeOptions({
   iconUrl: markerIcon.src,
@@ -104,37 +105,40 @@ const Map = () => {
                 scrollWheelZoom={true}
                 style={{ height: "calc(100vh - 70px)", width: "100%" }}
             >
-                <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
+                    <TileLayer
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    />
+                      <MarkerClusterGroup
+                        chunkedLoading
+                      >
 
-                {
-                    storeInfos.map((storeInfo:any,index:number) => {
-                        return(
-                            <Marker position={[storeInfo.lat,storeInfo.lng]} key={index}>
-                                <Popup>
-                                    <b>{storeInfo.storeName}</b>
-                                    <p>{storeInfo.address}</p>
-                                    <p>{storeInfo.contents}</p>
-                                    <p>{storeInfo.businessHours}</p>
-                                    <p className="flex">
-                                    {
-                                        storeInfo.tags.map((store:any,l:any) => {
-                                            return(
-                                                <p key={l}>#{store} </p>
-                                            )
-                                        })
-                                    }
-                                    </p>
-                                </Popup>
-                            </Marker>                            
-                        )
-                    })
-                }
+                        {
+                            storeInfos.map((storeInfo:any,index:number) => {
+                                return(
+                                    <Marker position={[storeInfo.lat,storeInfo.lng]} key={index}>
+                                        <Popup>
+                                            <b>{storeInfo.storeName}</b>
+                                            <p>{storeInfo.address}</p>
+                                            <p>{storeInfo.contents}</p>
+                                            <p>{storeInfo.businessHours}</p>
+                                            <p className="flex">
+                                            {
+                                                storeInfo.tags.map((store:any,l:any) => {
+                                                    return(
+                                                        <p key={l}>#{store} </p>
+                                                    )
+                                                })
+                                            }
+                                            </p>
+                                        </Popup>
+                                    </Marker>                            
+                                )
+                            })
+                        }
 
-                <ChangeMapCenter center={center} />
-
+                        <ChangeMapCenter center={center} />
+                    </MarkerClusterGroup>
             </MapContainer>
             <Footer />
             <Loading 
