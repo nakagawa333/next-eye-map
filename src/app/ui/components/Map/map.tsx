@@ -7,9 +7,9 @@ import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import axios from "axios";
-import { Loading } from "./loading";
-import { Footer } from "./Footer/footer";
-import { Header } from "./Header/header";
+import { Loading } from "../loading";
+import { Footer } from "../Footer/footer";
+import { Header } from "../Header/header";
 import { PrefectureCoordinates } from "@/constants/prefectureCoordinates";
 import MarkerClusterGroup from 'react-leaflet-cluster'
 

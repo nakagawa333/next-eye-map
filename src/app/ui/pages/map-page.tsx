@@ -8,7 +8,7 @@ function MapPage() {
 
   const Map = useMemo(
     () =>
-      dynamic(() => import("../components/map"), {
+      dynamic(() => import("../components/Map/map"), {
         loading: () => <p>A map is loading</p>,
         ssr: false,
       }),
