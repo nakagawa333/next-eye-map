@@ -9,3 +9,9 @@ module.exports = withPWA({
     //next.js config
     reactStrictMode: true,
 })
+
+module.exports = {
+    experimental: {
+        forceSwcTransforms: true,
+    },
+}
