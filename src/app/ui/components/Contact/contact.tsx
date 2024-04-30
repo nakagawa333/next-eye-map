@@ -3,7 +3,7 @@ import { Footer } from "../Footer/footer"
 import { Header } from "../Header/header"
 
 /** 連絡先 */
-export const Contact = () => {
+const Contact = () => {
     const nameInputRef = useRef<HTMLInputElement>(null);
     const emailInputRef = useRef<HTMLInputElement>(null);
     const contactInformationRef = useRef<HTMLTextAreaElement>(null);
@@ -83,7 +83,8 @@ export const Contact = () => {
                                 <label htmlFor="subject" className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">お名前</label>
                                 <input 
                                   type="text" 
-                                  id="subject" 
+                                  id="subject"
+                                  data-testid="subject"
                                   className="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-100 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light" 
                                   placeholder="お名前"
                                   maxLength={nameMaxLength}
@@ -96,6 +97,7 @@ export const Contact = () => {
                                 <input 
                                    type="email" 
                                    id="email"
+                                   data-testid="email"
                                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-100 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light" 
                                    placeholder="example@gmail.com" 
                                    ref={emailInputRef}
@@ -105,7 +107,8 @@ export const Contact = () => {
                             <div className="sm:col-span-2">
                                 <label htmlFor="contactInformation" className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">お問い合わせ</label>
                                 <textarea 
-                                  id="contactInformation" 
+                                  id="contactInformation"
+                                  data-testid="contact"
                                   rows={6} 
                                   className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg shadow-sm border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-100 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-primary-500 dark:focus:border-primary-500" 
                                   placeholder="お問い合わせ内容"
@@ -119,6 +122,7 @@ export const Contact = () => {
                             <div className="flex justify-end">
                                 <button 
                                 type="submit"
+                                data-testid="submit"
                                 onClick={(e) => submitClick(e)}
                                 className="py-3 px-5 text-sm font-medium text-center text-gray-800 rounded-lg bg-gray-300 bg-primary-700 sm:w-fit hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
                                     送信
@@ -132,3 +136,5 @@ export const Contact = () => {
 
     )
 }
+
+export default Contact;
