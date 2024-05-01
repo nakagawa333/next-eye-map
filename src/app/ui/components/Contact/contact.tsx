@@ -33,6 +33,10 @@ const Contact = () => {
         initForm();
     }
 
+    /**
+     * バリデーションチェックを行う
+     * @returns true:正常 false:異常
+     */
     const validateCheck = () => {
         let name:any = nameInputRef?.current?.value;
         if(isEmpty(name) || nameMaxLength < name?.length){
@@ -57,6 +61,9 @@ const Contact = () => {
         return true;
     }
 
+    /**
+     * 各フォームの初期化を行う
+     */
     const initForm = () => {
         if(nameInputRef.current){
             nameInputRef.current.value = "";
