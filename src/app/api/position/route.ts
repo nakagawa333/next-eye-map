@@ -2,6 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import {NormalizeResult, normalize} from "@geolonia/normalize-japanese-addresses";
 import fs from 'fs'; 
 
+/**
+ * @swagger
+ * /api/position:
+ *   get:
+ *     summary: 店舗情報一覧API
+ *     description: 各店舗情報一覧を返却するAPI
+ *     responses:
+ *       200:
+ *         description: 成功時のレスポンス
+ */
 export async function GET(request: NextRequest){
     let readStoreInfos = fs.readFileSync("./src/app/storeInfos.json","utf-8")
     let storeInfosJson = JSON.parse(readStoreInfos);
