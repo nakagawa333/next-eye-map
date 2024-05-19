@@ -6,12 +6,12 @@ import L from "leaflet";
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
-import axios from "axios";
 import { Loading } from "../loading";
 import { Footer } from "../Footer/footer";
 import { Header } from "../Header/header";
 import { PrefectureCoordinates } from "@/constants/prefectureCoordinates";
 import MarkerClusterGroup from 'react-leaflet-cluster'
+import usePosition from "../../reactQuery/position/useQuery";
 
 L.Icon.Default.mergeOptions({
   iconUrl: markerIcon.src,
@@ -39,7 +39,7 @@ const Map = () => {
     const [isWaitng, setIsWaiting] = useState(true);
     const [isLoadingOpen,setIsLoadingOpen] = useState<boolean>(true);
 
-    const [storeInfos,setStoreInfos] = useState<any[]>([]);
+    // const [storeInfos,setStoreInfos] = useState<any[]>([]);
 
     const prefectures:string[] = [
         "北海道", "青森県", "岩手県", "宮城県", "秋田県", 
@@ -54,18 +54,8 @@ const Map = () => {
         "鹿児島県", "沖縄県"
     ];
 
-    useEffect(() => {
-        (async() => {
-            try{
-                let res = await axios.get("/api/position");
-                let data = res.data;
-                setStoreInfos(() => data.storeInfos);
-                setIsLoadingOpen(() => false);
-            } catch(error:any){
-                console.error(error);
-            }
-        })()
-    },[])
+    const {data, isLoading, isError} = usePosition();
+    const storeInfos = data?.storeInfos;
 
     const prefectureSelect = (prefecture:string) => {
         let center = PrefectureCoordinates.coordinates[prefecture];
@@ -114,7 +104,8 @@ const Map = () => {
                       >
 
                         {
-                            storeInfos.map((storeInfo:any,index:number) => {
+                            Array.isArray(storeInfos) 
+                              && storeInfos.map((storeInfo:any,index:number) => {
                                 return(
                                     <Marker position={[storeInfo.lat,storeInfo.lng]} key={index}>
                                         <Popup>
@@ -141,9 +132,14 @@ const Map = () => {
                     </MarkerClusterGroup>
             </MapContainer>
             <Footer />
-            <Loading 
-              isOpen={isLoadingOpen}
-            />  
+
+            {
+                isLoading === true && isError === false && (
+                    <Loading 
+                    isOpen={isLoading}
+                  />  
+                )
+            }
         </>
 
     )
