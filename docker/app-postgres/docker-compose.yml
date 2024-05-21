@@ -1,0 +1,38 @@
+version: '3.8'
+
+volumes:
+  pgdata:
+
+networks:
+  default:
+
+services:
+  db:
+    image: postgres
+    container_name: db
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=${DB_NAME:-db}
+      - POSTGRES_USER=${postgres}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-postgres}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d
+
+  adminer:
+    image: michalhosna/adminer
+    container_name: adminer
+    ports:
+      - 8080:8080
+    restart: always
+    depends_on:
+      - db
+    environment:
+      # specify service name of PostgreSQL to ADMINER_SERVER
+      - ADMINER_SERVER=db
+      - ADMINER_DRIVER=pgsql
+      - ADMINER_DB=${DB_NAME:-db}
+      - ADMINER_USERNAME=${DB_USER:-postgres}
+      - ADMINER_PASSWORD=${DB_PASSWORD:-postgres}
+      - ADMINER_NAME=ADMINER for PostgreSQL DB

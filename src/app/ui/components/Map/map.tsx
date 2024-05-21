@@ -111,11 +111,17 @@ const Map = () => {
                                         <Popup>
                                             <b>{storeInfo.storeName}</b>
                                             <p>{storeInfo.address}</p>
-                                            <p>{storeInfo.contents}</p>
-                                            <p>{storeInfo.businessHours}</p>
+                                            <p>{storeInfo.content}</p>
+                                            <p>{storeInfo.businessHour}</p>
+                                            {
+                                                storeInfo.phoneNumber !== null && storeInfo.phoneNumber !== undefined
+                                                && (
+                                                    <a href={'tel:' + storeInfo.phoneNumber}>{storeInfo.phoneNumber}</a>
+                                                )
+                                            }
                                             <p className="flex">
                                             {
-                                                storeInfo.tags.map((store:any,l:any) => {
+                                                Array.isArray(storeInfo.tags) && storeInfo.tags.map((store:any,l:any) => {
                                                     return(
                                                         <p key={l}>#{store} </p>
                                                     )
