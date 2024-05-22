@@ -8,21 +8,20 @@ export default async function middleware(request:NextRequest){
         const ALLOWED_IPS = process.env.NEXT_PUBLIC_ALLOWED_IPS
         ? process.env.NEXT_PUBLIC_ALLOWED_IPS.split(",")
         : [];
-
+        
         if(!Array.isArray(ALLOWED_IPS) || 0 === ALLOWED_IPS.length){
             console.error("アクセス許可するIPアドレスの環境変数が設定されていません。");
             return new NextResponse(null,{status:500});
         }
 
-        let ip:string = "";
-        try{
-            //IPアドレス取得
-            //TODO ミドルウェアではaxiosが使えないためfetchを使用
-            let res = await fetch("https://api.ipify.org/?format=json");
-            let json = await res.json();
-            ip = json.ip;
-        } catch(error:any){
-            console.error(error);
+        //IPアドレス取得処理
+        let ip:string = request.ip ?? request.headers.get('x-real-ip') ?? '';
+        if(!ip){
+            const forwardFor = request.headers.get("x-forwarded-for");
+            ip = forwardFor ? forwardFor.split(',')[0] : '';
+        }
+
+        if(isEmpty(ip)){
             console.error("ipアドレス取得APIへのリクエストに失敗しました");
             return new NextResponse(null,{status:500});
         }
