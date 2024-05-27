@@ -1,3 +1,3 @@
 export class Endpoints{
-    static readonly position = "/api/position";
+    static readonly STOREINFOS = "/api/store-infos";
 }

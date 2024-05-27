@@ -11,7 +11,7 @@ import { Footer } from "../Footer/footer";
 import { Header } from "../Header/header";
 import { PrefectureCoordinates } from "@/constants/prefectureCoordinates";
 import MarkerClusterGroup from 'react-leaflet-cluster'
-import usePosition from "../../reactQuery/position/useQuery";
+import { useStoreInfos } from "../../reactQuery/storeInfos/useQuery";
 
 L.Icon.Default.mergeOptions({
   iconUrl: markerIcon.src,
@@ -54,7 +54,10 @@ const Map = () => {
         "鹿児島県", "沖縄県"
     ];
 
-    const {data, isLoading, isError} = usePosition();
+    const [{fetchStoreInfos}] = useStoreInfos();
+
+    const {data, isLoading, isError} = fetchStoreInfos();
+
     const storeInfos = data?.storeInfos;
 
     const prefectureSelect = (prefecture:string) => {

@@ -9,7 +9,7 @@ const Contact = () => {
     const contactInformationRef = useRef<HTMLTextAreaElement>(null);
 
     const nameMaxLength:number = 50;
-    const emailMaxLength:number = 50
+    const emailMaxLength:number = 50;
     const mailPattern:RegExp = /^[a-zA-Z0-9_+-]+(.[a-zA-Z0-9_+-]+)*@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.)+[a-zA-Z]{2,}$/
 
     /**

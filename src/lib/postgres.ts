@@ -20,13 +20,11 @@ export class Postgress{
         return res;
     }
 
-    async scan(query:string){
-        return await this.client.query(query);
-    }
-
-    async query(query:string,arr:any[]){
-        const res = await this.client.query(query,arr)
-        return res;
+    async query(query:string,arr:any=null){
+        if(Array.isArray(arr)){
+            return this.client.query(query,arr);
+        }
+        return this.client.query(query);
     }
 
     async end(){
