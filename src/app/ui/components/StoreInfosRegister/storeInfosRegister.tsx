@@ -1,15 +1,27 @@
-import { useRef } from "react"
+import { NonDirectionalSuspenseListProps, useRef, useState } from "react"
 import { Footer } from "../Footer/footer"
 import { Header } from "../Header/header"
 import EegexPatterns from "@/constants/regexPatterns";
 import { isEmpty } from "@/lib/isEmpty";
+import { useStoreInfos } from "../../reactQuery/storeInfos/useQuery";
+import { Loading } from "../loading";
+import { CreateStoreInfo } from "@/interfaces/createStoreInfo";
+import { Snackbar } from "../Snackbar/snackbar";
 
 const StoreInfosRegister = () =>{
+    const [tags,setTags] = useState<string[]>([]);
+    const [isLoading,setIsLoading] = useState<boolean>(false);
+    const [isSucess,setIsSucess] = useState<boolean>(false);
+    const [isOpen,setIsOpen] = useState<boolean>(true);
+    const [type,setType] = useState<string>("");
+    const [message,setMessage] = useState<string>("");
+
     const storeNameInputRef = useRef<HTMLInputElement>(null);
     const addressInputRef = useRef<HTMLInputElement>(null);
     const contentTextAreaRef = useRef<HTMLTextAreaElement>(null);
     const businessHourInputRef = useRef<HTMLInputElement>(null);
     const telephoneInputRef = useRef<HTMLInputElement>(null);
+    const hashTagInputRef = useRef<HTMLInputElement>(null);
 
     const storeNameMaxLength:number = 30;
     const addressMaxLength:number = 400;
@@ -17,15 +29,65 @@ const StoreInfosRegister = () =>{
     const businessHourMaxLength:number = 65535;
     const telephonerMaxLength:number = 30;
 
+    const [{createStoreInfos}] = useStoreInfos();
+    const data = createStoreInfos();
+
     //登録クリック
-    const registerClick = (e:any) => {
+    const registerClick = async(e:any) => {
+        let validateCheckRes:boolean = validateCheck();
+        if(validateCheckRes === false){
+            return;
+        }
+
+        setIsLoading(true);
+        e.preventDefault();
+
+        let storeInfo:CreateStoreInfo = {
+            storeName:storeNameInputRef?.current?.value,
+            address:addressInputRef?.current?.value,
+            content:contentTextAreaRef?.current?.value,
+            businessHour:businessHourInputRef?.current?.value,
+            phoneNumber:telephoneInputRef?.current?.value,
+            tags:tags
+        }
+
+        try{
+            await data.mutateAsync(storeInfo);
+            setIsLoading(false);
+            setIsSucess(true);
+            //フォームの初期化を行う
+            initForm();
+            setTags([]);
+            setMessage("登録に成功しました");
+            setType("sucess");
+        } catch(error:any){
+            setIsLoading(false);
+            setMessage("登録に失敗しました");
+            setType("error");
+        } finally {
+            setIsOpen(true);
+        } 
+    }
+
+    const tagButtonClick = (index:number) => {
+        let filterTasgs = tags.filter((tag:string,i:number) => {
+            return index !== i;
+        })
+        setTags(filterTasgs);
+    }
+
+    /**
+     * バリデーションチェックを行う
+     * @returns true:正常 false:異常
+     */
+    const validateCheck = () => {
         let storeName:string | undefined = storeNameInputRef?.current?.value;
         if(isEmpty(storeName) || storeNameMaxLength < storeName?.length){
             return false;
         }
 
         let address:string | undefined = addressInputRef?.current?.value;
-        if(isEmpty(address) || addressMaxLength < addresse?.length){
+        if(isEmpty(address) || addressMaxLength < address?.length){
             return false;
         }
 
@@ -42,7 +104,7 @@ const StoreInfosRegister = () =>{
         let telephone:string | undefined = telephoneInputRef?.current?.value;
         if(isEmpty(telephone) 
             || telephonerMaxLength < telephone?.length
-            || EegexPatterns.PHONENUMBER.test(telephone)
+            || !EegexPatterns.PHONENUMBER.test(telephone)
         ){
             return false;
         }
@@ -50,12 +112,44 @@ const StoreInfosRegister = () =>{
     }
 
     /**
-     * バリデーションチェックを行う
-     * @returns true:正常 false:異常
+     * フォームの初期化を行う
      */
-    const validateCheck = () => {
+    const initForm = () => {
+        if(storeNameInputRef.current){
+            storeNameInputRef.current.value = "";
+        }
 
-        return true;
+        if(addressInputRef.current){
+            addressInputRef.current.value = "";
+        }
+
+        if(contentTextAreaRef.current){
+            contentTextAreaRef.current.value = "";
+        }
+
+        if(businessHourInputRef.current){
+            businessHourInputRef.current.value = "";
+        }
+
+        if(telephoneInputRef.current){
+            telephoneInputRef.current.value = "";
+        }
+    }
+
+    const onSubmit = (e:any) => {
+        return false;
+    }
+
+    const onEnterKeydown = (e:any) => {
+        if(e.key === "Enter"){
+            e.preventDefault();
+            let tag:string | undefined = hashTagInputRef?.current?.value;
+            let copyTags:string[] = [...tags];
+            if(!isEmpty(tag)) copyTags.push(`${tag}`);
+
+            if(hashTagInputRef?.current?.value) hashTagInputRef.current.value = "";
+            setTags(copyTags);
+        }
     }
 
     return(
@@ -63,7 +157,7 @@ const StoreInfosRegister = () =>{
             <Header />
                 <section className="bg-white gray:bg-gray-900">
                     <div className="py-8 lg:py-16 px-4 mx-auto max-w-screen-md">
-                        <form action="#" className="space-y-8">
+                        <form action="#" className="space-y-8" onSubmit={(e) => onSubmit(e)}>
                             <div>
                                 <label htmlFor="subject" className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">
                                     店舗名
@@ -117,7 +211,7 @@ const StoreInfosRegister = () =>{
 
                             </div>
 
-                            <div className="sm:col-span-2">t
+                            <div className="sm:col-span-2">
                                 <label htmlFor="contactInformaion" className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">
                                     営業時間
                                 </label>
@@ -152,7 +246,51 @@ const StoreInfosRegister = () =>{
                                 />  
                             </div>
 
-                            <div className="flex justify-end">
+                            <div className="sm:col-span-2">
+                                <label htmlFor="contactInformation" className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">
+                                    ハッシュタグ
+                                </label>
+
+                                <div className="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-100 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light">
+                                    <div className="flex flex-wrap gap-y-2">
+                                    {
+                                        tags.map((tag:string,index:number) => {
+                                            return (
+                                                <button 
+                                                  className="flex border rounded-full border-gray-800 mr-2" 
+                                                  onClick={(e) => tagButtonClick(index)}
+                                                  type="button"
+                                                >
+                                                    <span 
+                                                        className="pl-2 text-gray-900"
+                                                        key={index}
+                                                    >
+                                                        #{tag}
+                                                    </span>
+
+                                                    <span className="ml-1 pl-1 pr-2">
+                                                        ×
+                                                    </span>
+                                                </button>
+                                            )
+                                        })
+                                    }
+                                    </div>
+                                    
+                                    <div>
+                                        <input 
+                                            placeholder="ハッシュタグを追加する" 
+                                            type="text"
+                                            onKeyDown={(e) => onEnterKeydown(e)}
+                                            ref={hashTagInputRef}
+                                            className="mt-3 block w-full p-4 ps-5 text-sm rounded-lg"
+                                        >   
+                                        </input>
+                                    </div>
+                                </div>
+                            </div>
+
+                        <div className="flex justify-end">
                                 <button 
                                     type="submit"
                                     data-testid="submit"
@@ -166,6 +304,22 @@ const StoreInfosRegister = () =>{
                     </div>
                 </section>
             <Footer />
+
+            <Snackbar 
+               isOpen={isOpen}
+               setIsOpen={setIsOpen}
+               type={type}
+               message={message}
+               time={5000}
+            />
+
+            {
+                isLoading === true &&  (
+                    <Loading 
+                    isOpen={isLoading}
+                  />  
+                )
+            }
         </>
     )
 }
